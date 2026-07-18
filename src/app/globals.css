@@ -1,0 +1,168 @@
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff;
+  --surface: #f6f6f7;
+  --surface-2: #ededef;
+  --foreground: #0b0b0c;
+  --muted: #6e6e73;
+  --border: #e3e3e6;
+  --accent: #0b0b0c;
+  --accent-2: #52525b;
+  --accent-soft: #f1f1f2;
+  --accent-foreground: #ffffff;
+  --ring: #0b0b0c;
+  --gradient-accent: linear-gradient(135deg, #18181b, #52525b);
+  --hero-gradient: linear-gradient(160deg, #ffffff 0%, #f4f4f5 45%, #e7e7ea 100%);
+  --glass-bg: rgba(12, 12, 14, 0.4);
+  --glass-border: rgba(255, 255, 255, 0.28);
+  --glass-highlight: rgba(255, 255, 255, 0.4);
+}
+
+.dark {
+  --background: #08080a;
+  --surface: #121214;
+  --surface-2: #1a1a1d;
+  --foreground: #f7f7f8;
+  --muted: #9b9ba1;
+  --border: #26262a;
+  --accent: #f7f7f8;
+  --accent-2: #a1a1aa;
+  --accent-soft: #1c1c20;
+  --accent-foreground: #08080a;
+  --ring: #f7f7f8;
+  --gradient-accent: linear-gradient(135deg, #fafafa, #a1a1aa);
+  --hero-gradient: linear-gradient(160deg, #141417 0%, #0f0f12 50%, #0a0a0c 100%);
+  --glass-bg: rgba(6, 6, 8, 0.5);
+  --glass-border: rgba(255, 255, 255, 0.16);
+  --glass-highlight: rgba(255, 255, 255, 0.22);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-accent: var(--accent);
+  --color-accent-2: var(--accent-2);
+  --color-accent-soft: var(--accent-soft);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-ring: var(--ring);
+  --font-display: var(--font-sans);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-sans);
+}
+
+* {
+  border-color: var(--border);
+}
+
+html {
+  scroll-behavior: smooth;
+  color-scheme: light;
+}
+
+html.dark {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.text-gradient {
+  background: var(--gradient-accent);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.bg-noise {
+  background-image: radial-gradient(
+    circle at 1px 1px,
+    var(--border) 1px,
+    transparent 0
+  );
+  background-size: 22px 22px;
+}
+
+::selection {
+  background: var(--foreground);
+  color: var(--background);
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 999px;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 28s linear infinite;
+}
+
+/* Theme switch: the incoming theme spreads out from the toggle button. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+::view-transition-old(root) {
+  z-index: 0;
+}
+::view-transition-new(root) {
+  z-index: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
