@@ -8,12 +8,7 @@ import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { Reveal } from "@/components/ui/Reveal";
 import { VisionIcon, NetworkIcon, CodeIcon, DataIcon } from "@/components/ui/DomainIcons";
-import {
-  viewportOnce,
-  staggerContainer,
-  fadeUp,
-  fadeUpSubtle,
-} from "@/lib/animations";
+import { viewportOnce, staggerContainer, fadeUp } from "@/lib/animations";
 
 const icons: Record<SkillGroup["icon"], typeof VisionIcon> = {
   vision: VisionIcon,
@@ -32,7 +27,6 @@ export function Skills() {
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
-  const [chipsSeen, setChipsSeen] = useState<Record<number, boolean>>({});
 
   return (
     <section id="skills" className="relative py-20 sm:py-28 lg:py-32">
@@ -93,16 +87,13 @@ export function Skills() {
                     whileInView="show"
                     viewport={viewportOnce}
                     variants={staggerContainer(0.04, 0.15)}
-                    onViewportEnter={() =>
-                      setChipsSeen((prev) => ({ ...prev, [i]: true }))
-                    }
                     className="relative mt-6 flex flex-wrap gap-2 pt-6 border-t border-border"
                   >
                     {group.items.map((item) => (
                       <motion.span
                         key={item.name}
-                        variants={chipsSeen[i] ? fadeUpSubtle : fadeUp}
-                        transition={{ duration: chipsSeen[i] ? 0.3 : 0.4 }}
+                        variants={fadeUp}
+                        transition={{ duration: 0.4 }}
                         whileHover={{ y: -3 }}
                         className={`rounded-xl px-3 py-1.5 text-sm transition-colors cursor-default ${
                           item.featured

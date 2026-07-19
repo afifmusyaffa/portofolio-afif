@@ -11,22 +11,22 @@ const container = {
   }),
 };
 
-// Full mask-slide the first time — words rise fully into place. Once seen,
-// re-entries only dip partway down (still legible through the mask) instead
-// of sliding fully out of view, so scrolling back up doesn't blank the text.
-const word: import("framer-motion").Variants = {
+const word = {
   hidden: { y: "110%" },
-  show: { y: 0 },
-};
-
-const wordSubtle: import("framer-motion").Variants = {
-  hidden: { y: "35%" },
   show: { y: 0 },
 };
 
 /**
  * Reveals a heading word by word from behind a mask — the words rise into
  * place instead of simply fading, which reads as deliberate on long headings.
+ *
+ * Driven by `animate` (not `whileInView`) once it has been seen. `whileInView`
+ * only fires once with `viewportOnce`, so switching locale afterwards swaps in
+ * new word text — new elements, since word count/text differs per language —
+ * that would otherwise mount straight into their hidden state with nothing
+ * left to trigger the reveal, leaving the heading blank. `animate` is a live
+ * target that newly-mounted words pick up immediately, so a locale switch
+ * after the first reveal never leaves words stuck hidden.
  */
 export function TextReveal({
   text,
@@ -38,26 +38,27 @@ export function TextReveal({
   delay?: number;
 }) {
   const words = text.split(" ");
-  const [seen, setSeen] = useState(false);
+  const [revealed, setRevealed] = useState(false);
 
   return (
     <motion.span
       initial="hidden"
-      whileInView="show"
+      animate={revealed ? "show" : undefined}
+      whileInView={revealed ? undefined : "show"}
       viewport={viewportOnce}
+      onViewportEnter={() => setRevealed(true)}
       custom={delay}
       variants={container}
-      onViewportEnter={() => setSeen(true)}
       className={className}
     >
       {words.map((w, i) => (
         <span
-          key={`${w}-${i}`}
+          key={i}
           className="inline-block overflow-hidden align-bottom pb-[0.08em] mr-[0.25em]"
         >
           <motion.span
-            variants={seen ? wordSubtle : word}
-            transition={{ duration: seen ? 0.4 : 0.75, ease: easeOut }}
+            variants={word}
+            transition={{ duration: 0.75, ease: easeOut }}
             className="inline-block"
           >
             {w}

@@ -15,7 +15,6 @@ const tilts = [-4, 3, -3];
 
 function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onOpen: () => void }) {
   const t = useT();
-  const [sealSeen, setSealSeen] = useState(false);
 
   return (
     <Reveal
@@ -24,10 +23,6 @@ function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onO
       whileHover={{ y: -4 }}
       className="relative flex rounded-2xl border border-border bg-background shadow-sm"
     >
-      <span className="absolute top-3 right-3 sm:top-4 sm:right-4 rotate-3 rounded-full border border-dashed border-foreground/20 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted">
-        {t({ id: "Terverifikasi", en: "Verified" })}
-      </span>
-
       {/* Seal — the stamp. Presses in on scroll and again on click. */}
       <button
         onClick={onOpen}
@@ -35,21 +30,12 @@ function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onO
         className="group relative w-24 sm:w-32 shrink-0 flex items-center justify-center p-4 sm:p-6"
       >
         <motion.span
-          initial={
-            sealSeen
-              ? { opacity: 0.65, scale: 0.94, rotate: tilts[index] }
-              : { opacity: 0, scale: 1.5, rotate: tilts[index] * 4 }
-          }
+          initial={{ opacity: 0, scale: 1.5, rotate: tilts[index] * 4 }}
           whileInView={{ opacity: 1, scale: 1, rotate: tilts[index] }}
           viewport={viewportOnce}
-          onViewportEnter={() => setSealSeen(true)}
           whileTap={{ scale: 0.88 }}
           whileHover={{ rotate: 0, scale: 1.06 }}
-          transition={
-            sealSeen
-              ? { type: "spring", stiffness: 300, damping: 22 }
-              : { type: "spring", stiffness: 260, damping: 16, delay: index * 0.1 + 0.15 }
-          }
+          transition={{ type: "spring", stiffness: 260, damping: 16, delay: index * 0.1 + 0.15 }}
           className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border-2 border-dashed border-foreground/25 bg-white p-3 shadow-sm"
         >
           {/* Plain <img>, not next/image — one asset is an SVG, and these
@@ -70,15 +56,27 @@ function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onO
       </div>
 
       <div className="flex-1 min-w-0 p-4 sm:p-6">
-        <p className="pr-20 sm:pr-16 text-[11px] uppercase tracking-[0.16em] text-muted font-medium">
-          {cert.issuer} · {cert.date}
-          {cert.credential?.id && (
-            <span className="font-mono normal-case tracking-normal">
-              {" "}
-              · #{cert.credential.id}
-            </span>
-          )}
-        </p>
+        {/* The "Verified" badge floats rather than sitting at a fixed
+            padding-reserved offset — a float only narrows the text it
+            wraps around for its own height, so a long issuer name that
+            wraps to a second line still gets the full width back instead
+            of staying squeezed for the whole paragraph. The clearfix
+            wrapper keeps the float from bleeding into the heading below
+            when "Terverifikasi" (much wider than "Verified") is active. */}
+        <div className="[clear:both] overflow-hidden">
+          <span className="float-right ml-2 shrink-0 rotate-3 rounded-full border border-dashed border-foreground/20 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-muted whitespace-nowrap">
+            {t({ id: "Terverifikasi", en: "Verified" })}
+          </span>
+          <p className="text-[11px] uppercase tracking-[0.16em] text-muted font-medium">
+            {cert.issuer} · {cert.date}
+            {cert.credential?.id && (
+              <span className="font-mono normal-case tracking-normal">
+                {" "}
+                · #{cert.credential.id}
+              </span>
+            )}
+          </p>
+        </div>
 
         <h3 className="mt-1.5 font-display text-base sm:text-lg font-extrabold tracking-tight leading-snug">
           {t(cert.headline)}

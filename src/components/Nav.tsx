@@ -112,7 +112,7 @@ function BarContent({
         </button>
         <a
           href="#contact"
-          className="hidden sm:inline-flex h-9 items-center rounded-xl bg-foreground text-background px-4 text-xs font-bold transition-transform hover:scale-[1.03] active:scale-95"
+          className="hidden sm:inline-flex min-h-9 items-center justify-center rounded-xl bg-foreground text-background px-4 py-2 text-center text-xs font-bold leading-tight transition-transform hover:scale-[1.03] active:scale-95"
         >
           {t({ id: "Hubungi Saya", en: "Get in Touch" })}
         </a>

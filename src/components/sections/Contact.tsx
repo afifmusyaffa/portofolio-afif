@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { motion } from "framer-motion";
 import { useT } from "@/lib/i18n";
 import { profile } from "@/data/profile";
@@ -13,12 +12,7 @@ import {
   MailIcon,
   ArrowUpRightIcon,
 } from "@/components/ui/SocialIcons";
-import {
-  viewportOnce,
-  staggerContainer,
-  fadeUp,
-  fadeUpSubtle,
-} from "@/lib/animations";
+import { viewportOnce, staggerContainer, fadeUp } from "@/lib/animations";
 
 const links = [
   { label: "GitHub", href: profile.socials.github, Icon: GithubIcon },
@@ -29,7 +23,6 @@ const links = [
 
 export function Contact() {
   const t = useT();
-  const [iconsSeen, setIconsSeen] = useState(false);
 
   return (
     <section id="contact" className="relative pt-20 sm:pt-28 lg:pt-32">
@@ -175,7 +168,6 @@ export function Contact() {
             whileInView="show"
             viewport={viewportOnce}
             variants={staggerContainer(0.06)}
-            onViewportEnter={() => setIconsSeen(true)}
             className="flex items-center gap-2"
           >
             {links.map(({ label, href, Icon }) => {
@@ -183,8 +175,8 @@ export function Contact() {
               return (
                 <motion.a
                   key={label}
-                  variants={iconsSeen ? fadeUpSubtle : fadeUp}
-                  transition={{ duration: iconsSeen ? 0.3 : 0.4 }}
+                  variants={fadeUp}
+                  transition={{ duration: 0.4 }}
                   href={href}
                   target={isMail ? undefined : "_blank"}
                   rel={isMail ? undefined : "noopener noreferrer"}

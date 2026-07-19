@@ -23,21 +23,6 @@ export const riseIn: Variants = {
   show: { opacity: 1, y: 0, scale: 1 },
 };
 
-/**
- * Quieter counterparts used once a staggered group has already been seen —
- * a smaller nudge from a state that's still mostly visible, instead of the
- * full entrance replaying every time the group re-enters the viewport.
- */
-export const fadeUpSubtle: Variants = {
-  hidden: { opacity: 0.6, y: 8 },
-  show: { opacity: 1, y: 0 },
-};
-
-export const riseInSubtle: Variants = {
-  hidden: { opacity: 0.6, y: 10, scale: 0.99 },
-  show: { opacity: 1, y: 0, scale: 1 },
-};
-
 /** Slides in from the side; pair with a per-item custom direction. */
 export const slideIn = (from: "left" | "right" = "left"): Variants => ({
   hidden: { opacity: 0, x: from === "left" ? -28 : 28 },
@@ -70,12 +55,12 @@ export const staggerContainer = (
 });
 
 /**
- * Reveals replay every time an element enters the viewport, so scrolling
- * back up re-runs the animation instead of showing already-settled content.
- * The margin is kept small so elements aren't held back until they're well
- * inside the screen — that reads as lag when scrolling upward.
+ * Reveals play once, the first time an element scrolls into view, and stay
+ * settled after that — scrolling back up does not replay them. The
+ * Experience section is the deliberate exception, with its own scroll-linked
+ * zoom/dim treatment instead of a whileInView reveal.
  */
-export const viewportOnce = { once: false, margin: "-40px 0px -40px 0px" };
+export const viewportOnce = { once: true, margin: "-40px 0px -40px 0px" };
 
 /** Triggers a little earlier — for large blocks that need a head start. */
-export const viewportEarly = { once: false, margin: "-80px 0px -80px 0px" };
+export const viewportEarly = { once: true, margin: "-80px 0px -80px 0px" };

@@ -12,14 +12,12 @@ import {
   viewportOnce,
   staggerContainer,
   riseIn,
-  riseInSubtle,
 } from "@/lib/animations";
 
 export function About() {
   const t = useT();
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
-  const [factsSeen, setFactsSeen] = useState(false);
   // `useReducedMotion` resolves synchronously on the client but not during
   // SSR, so branching render output on it directly causes a hydration
   // mismatch for anyone with the OS preference on. Gating it behind a
@@ -83,16 +81,11 @@ export function About() {
               whileInView="show"
               viewport={viewportOnce}
               variants={staggerContainer(0.08, 0.1)}
-              onViewportEnter={() => setFactsSeen(true)}
               className="grid grid-cols-2 gap-4 sm:gap-5"
             >
               {profile.quickFacts.map((fact) => (
-                <motion.div
-                  key={fact.label.en}
-                  variants={factsSeen ? riseInSubtle : riseIn}
-                  transition={{ duration: factsSeen ? 0.4 : 0.7 }}
-                >
-                  <SpotlightCard className="rounded-2xl border border-border bg-background p-5 sm:p-6">
+                <motion.div key={fact.label.en} variants={riseIn} transition={{ duration: 0.7 }}>
+                  <SpotlightCard className="h-full rounded-2xl border border-border bg-background p-5 sm:p-6">
                     <p className="text-[10px] uppercase tracking-[0.16em] text-muted font-medium">
                       {t(fact.label)}
                     </p>
