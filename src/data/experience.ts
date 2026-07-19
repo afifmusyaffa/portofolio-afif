@@ -20,7 +20,7 @@ export const experience: ExperienceItem[] = [
       id: "Magang IT & Komunikasi Digital",
       en: "IT & Digital Communications Intern",
     },
-    period: "Aug — Sep 2025",
+    period: "Aug–Sep 2025",
     location: "Deli Serdang",
     kind: "internship",
     headline: {
@@ -48,7 +48,7 @@ export const experience: ExperienceItem[] = [
       id: "Presidium Komisi Kepanitiaan",
       en: "Presidium, Committee Oversight",
     },
-    period: "2024 — 2025",
+    period: "2024–2025",
     location: "Pekanbaru",
     kind: "organization",
     headline: {

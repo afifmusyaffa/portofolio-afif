@@ -5,6 +5,8 @@ export const profile = {
   location: "Pekanbaru, Riau, Indonesia",
   email: "musyaffaafif11@gmail.com",
   phone: "+62 813-6380-7008",
+  resumeUrl:
+    "https://drive.google.com/file/d/1yGJ0Ubga9R3oBuokqPZxleNdfuzHermk/view?usp=sharing",
   socials: {
     github: "https://github.com/afifmusyaffa",
     linkedin: "https://www.linkedin.com/in/afifmusyaffa",
@@ -26,8 +28,8 @@ export const profile = {
   // the rest are academic/demo projects, so the copy says "works", not
   // "used by people" or "beyond the classroom".
   heroSubline: {
-    id: "Mahasiswa Teknik Informatika Politeknik Caltex Riau, fokus membangun sistem AI dan jaringan yang benar-benar berfungsi — bukan cuma teori di atas kertas.",
-    en: "Informatics student at Politeknik Caltex Riau, building AI and networking systems that actually function — not just theory on paper.",
+    id: "Mahasiswa Teknik Informatika di Politeknik Caltex Riau, fokus membangun sistem AI dan jaringan yang benar-benar berfungsi.",
+    en: "Informatics student at Politeknik Caltex Riau, focused on building AI and networking systems that actually work.",
   } satisfies Localized,
   heroStatus: {
     label: { id: "Status", en: "Status" } satisfies Localized,
@@ -47,8 +49,8 @@ export const profile = {
     en: "I like working where AI, networks, and the web meet. Even a smart model still needs a stable network under it and an interface people can actually use.",
   } satisfies Localized,
   aboutBody: {
-    id: "Sekarang saya semester 6, membagi waktu antara kuliah, organisasi kampus, dan proyek yang saya rilis sendiri. Cara belajar tercepat buat saya ya lewat mengerjakan — dan saya masih terus menambah yang belum saya kuasai.",
-    en: "I'm in my sixth semester, splitting my time between coursework, campus organisations, and projects I ship on my own. Building things is how I learn fastest — and there's still plenty I'm working on next.",
+    id: "Saat ini semester enam, waktu saya terbagi antara kuliah, organisasi kampus, dan proyek pribadi. Bagi saya, cara belajar paling cepat adalah dengan langsung mengerjakan, dan masih banyak hal baru yang terus saya pelajari.",
+    en: "I'm currently in my sixth semester, splitting time between coursework, campus organisations, and projects I build on my own. Building things is simply how I learn fastest, and there's always something new to pick up.",
   } satisfies Localized,
 
   quickFacts: [
@@ -85,7 +87,7 @@ export const profile = {
       id: "Sarjana Terapan Teknik Informatika",
       en: "B.Eng. (Applied), Informatics Engineering",
     } satisfies Localized,
-    period: "2023 — 2027",
+    period: "2023–2027",
     highlight: {
       id: "Terpilih mewakili kampus di program pertukaran mahasiswa internasional ke Politeknik Mersing, Malaysia.",
       en: "Chosen to represent my campus on an international student exchange at Politeknik Mersing, Malaysia.",

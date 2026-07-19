@@ -1,12 +1,12 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { useT } from "@/lib/i18n";
 import { projects, type Project } from "@/data/projects";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Reveal } from "@/components/ui/Reveal";
+import { ArrowUpRightIcon } from "@/components/ui/SocialIcons";
 import { profile } from "@/data/profile";
-import { viewportOnce, defaultTransition } from "@/lib/animations";
 
 function TechRow({ tech }: { tech: string[] }) {
   return (
@@ -40,7 +40,7 @@ function ProjectLinks({ project }: { project: Project }) {
           }`}
         >
           {t(link.label)}
-          <span aria-hidden>↗</span>
+          <ArrowUpRightIcon className="h-4 w-4" />
         </a>
       ))}
     </div>
@@ -59,35 +59,29 @@ export function Projects() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6">
           <SectionHeading
             index="02"
-            eyebrow={t({ id: "Karya", en: "Work" })}
-            title={t({
+            title={t({ id: "Karya", en: "Work" })}
+            lead={t({
               id: "Empat proyek, dari model sampai antarmukanya.",
               en: "Four projects, from the model to the interface.",
             })}
           />
-          <motion.a
+          <Reveal
+            as="a"
             href={profile.socials.github}
             target="_blank"
             rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 12 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportOnce}
-            transition={defaultTransition(0.2)}
+            y={12}
+            delay={0.2}
             className="shrink-0 inline-flex items-center gap-1.5 rounded-xl border border-border bg-background px-4 py-2.5 text-sm font-semibold hover:border-foreground transition-colors"
           >
             {t({ id: "Semua di GitHub", en: "All on GitHub" })}
-            <span aria-hidden>↗</span>
-          </motion.a>
+            <ArrowUpRightIcon className="h-4 w-4" />
+          </Reveal>
         </div>
 
         <div className="mt-12 lg:mt-16 grid gap-4 sm:gap-5">
           {/* Flagship — the only card that gets full width and full height. */}
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportOnce}
-            transition={defaultTransition()}
-          >
+          <Reveal y={40}>
             <SpotlightCard
               as="article"
               className="rounded-3xl border border-border bg-background p-7 sm:p-10 lg:p-12"
@@ -113,19 +107,12 @@ export function Projects() {
                 <ProjectLinks project={featured} />
               </div>
             </SpotlightCard>
-          </motion.div>
+          </Reveal>
 
           {/* Two mid-weight cards side by side. */}
           <div className="grid md:grid-cols-2 gap-4 sm:gap-5">
             {pair.map((project, i) => (
-              <motion.div
-                key={project.slug}
-                initial={{ opacity: 0, y: 36 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportOnce}
-                transition={defaultTransition(i * 0.1)}
-                className="h-full"
-              >
+              <Reveal key={project.slug} y={36} delay={i * 0.1} className="h-full">
                 <SpotlightCard
                   as="article"
                   className="h-full rounded-3xl border border-border bg-background p-7 sm:p-8 flex flex-col"
@@ -149,18 +136,13 @@ export function Projects() {
                     <ProjectLinks project={project} />
                   </div>
                 </SpotlightCard>
-              </motion.div>
+              </Reveal>
             ))}
           </div>
 
           {/* Closing card runs wide and short — breaks the grid rhythm. */}
           {closing && (
-            <motion.div
-              initial={{ opacity: 0, y: 32 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={viewportOnce}
-              transition={defaultTransition()}
-            >
+            <Reveal y={32}>
               <SpotlightCard
                 as="article"
                 className="rounded-3xl border border-border bg-background p-7 sm:p-8"
@@ -191,7 +173,7 @@ export function Projects() {
                   </div>
                 </div>
               </SpotlightCard>
-            </motion.div>
+            </Reveal>
           )}
         </div>
       </div>

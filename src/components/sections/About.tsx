@@ -1,23 +1,35 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { useT } from "@/lib/i18n";
 import { profile } from "@/data/profile";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { TextReveal } from "@/components/ui/TextReveal";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Reveal } from "@/components/ui/Reveal";
 import {
   viewportOnce,
-  defaultTransition,
   staggerContainer,
   riseIn,
+  riseInSubtle,
 } from "@/lib/animations";
 
 export function About() {
   const t = useT();
   const ref = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
+  const [factsSeen, setFactsSeen] = useState(false);
+  // `useReducedMotion` resolves synchronously on the client but not during
+  // SSR, so branching render output on it directly causes a hydration
+  // mismatch for anyone with the OS preference on. Gating it behind a
+  // mounted flag keeps the first client render identical to the server's,
+  // then applies the real value a frame later (after hydration settles).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
 
   const { scrollYProgress } = useScroll({
     target: ref,
@@ -30,22 +42,12 @@ export function About() {
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           index="01"
-          eyebrow={t({ id: "Tentang", en: "About" })}
-          title={t({
-            id: "Masih kuliah, tapi sudah terbiasa merilis karya nyata.",
-            en: "Still a student, already used to shipping real work.",
-          })}
+          title={t({ id: "Tentang", en: "About" })}
         />
 
         <div className="mt-12 lg:mt-16 grid lg:grid-cols-12 gap-4 sm:gap-5">
           {/* Statement panel — the one oversized block in this section. */}
-          <motion.div
-            initial={{ opacity: 0, y: 32 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportOnce}
-            transition={defaultTransition()}
-            className="lg:col-span-7"
-          >
+          <Reveal y={32} className="lg:col-span-7">
             <SpotlightCard className="relative h-full rounded-3xl border border-border bg-surface p-7 sm:p-10 lg:p-12">
               {/* Same fine engineering-grid texture used on the Contact
                   card — a quiet thread tying the "origin" section back to
@@ -64,22 +66,16 @@ export function About() {
                 <p className="font-display text-xl sm:text-2xl lg:text-[1.75rem] font-bold leading-[1.3] tracking-tight text-balance">
                   <TextReveal text={t(profile.aboutStatement)} />
                 </p>
-                <motion.p
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={viewportOnce}
-                  transition={defaultTransition(0.35)}
-                  className="mt-6 text-base text-muted leading-relaxed"
-                >
+                <Reveal as="p" opacityFrom={0} y={0} delay={0.35} className="mt-6 text-base text-muted leading-relaxed">
                   {t(profile.aboutBody)}
-                </motion.p>
+                </Reveal>
               </div>
             </SpotlightCard>
-          </motion.div>
+          </Reveal>
 
           {/* Fact tiles — small, dense counterweight to the statement. */}
           <motion.div
-            style={reduceMotion ? undefined : { y: asideY }}
+            style={mounted && reduceMotion ? undefined : { y: asideY }}
             className="lg:col-span-5 flex flex-col gap-4 sm:gap-5"
           >
             <motion.div
@@ -87,10 +83,15 @@ export function About() {
               whileInView="show"
               viewport={viewportOnce}
               variants={staggerContainer(0.08, 0.1)}
+              onViewportEnter={() => setFactsSeen(true)}
               className="grid grid-cols-2 gap-4 sm:gap-5"
             >
               {profile.quickFacts.map((fact) => (
-                <motion.div key={fact.label.en} variants={riseIn} transition={defaultTransition()}>
+                <motion.div
+                  key={fact.label.en}
+                  variants={factsSeen ? riseInSubtle : riseIn}
+                  transition={{ duration: factsSeen ? 0.4 : 0.7 }}
+                >
                   <SpotlightCard className="rounded-2xl border border-border bg-background p-5 sm:p-6">
                     <p className="text-[10px] uppercase tracking-[0.16em] text-muted font-medium">
                       {t(fact.label)}
@@ -103,11 +104,9 @@ export function About() {
               ))}
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={viewportOnce}
-              transition={defaultTransition(0.25)}
+            <Reveal
+              y={24}
+              delay={0.25}
               className="relative overflow-hidden rounded-2xl p-6 sm:p-7 flex-1 flex flex-col justify-between gap-5"
               style={{
                 background:
@@ -139,7 +138,7 @@ export function About() {
                 <span>{t({ id: "Malaysia", en: "Malaysia" })}</span>
                 <span>2024</span>
               </div>
-            </motion.div>
+            </Reveal>
           </motion.div>
         </div>
       </div>

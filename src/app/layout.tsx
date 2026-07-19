@@ -12,9 +12,9 @@ const bodyFont = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Afif Musyaffa — Portfolio",
+  title: "Afif Musyaffa | Portfolio",
   description:
-    "Afif Musyaffa — IT student at Politeknik Caltex Riau building at the intersection of AI, networking, and web development.",
+    "Afif Musyaffa, an IT student at Politeknik Caltex Riau building at the intersection of AI, networking, and web development.",
 };
 
 export default function RootLayout({

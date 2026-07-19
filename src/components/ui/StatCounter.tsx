@@ -13,15 +13,22 @@ export function StatCounter({
   decimals?: number;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  // Re-counts each time it scrolls back into view, matching the reveal
-  // animations elsewhere on the page.
   const inView = useInView(ref, { once: false, margin: "-40px" });
   const reduceMotion = useReducedMotion();
   const motionValue = useMotionValue(0);
   const spring = useSpring(motionValue, { damping: 24, stiffness: 90 });
+  const hasCountedRef = useRef(false);
 
+  // Counts up once, the first time it scrolls into view. After that it
+  // stays at its final value — scrolling it out and back in doesn't reset
+  // and re-play the count, it just stays visible.
   useEffect(() => {
-    motionValue.set(inView ? value : 0);
+    if (inView) {
+      hasCountedRef.current = true;
+      motionValue.set(value);
+    } else if (!hasCountedRef.current) {
+      motionValue.set(0);
+    }
   }, [inView, value, motionValue]);
 
   useEffect(() => {

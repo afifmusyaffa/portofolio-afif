@@ -40,6 +40,26 @@ export function InstagramIcon({ className }: IconProps) {
   );
 }
 
+/**
+ * Plain diagonal arrow used for "opens externally" / "go to" affordances.
+ * Drawn as an SVG rather than the ↗ glyph — that character sits in a Unicode
+ * range iOS renders with its color emoji font, so it showed up as a mismatched
+ * cartoon arrow instead of a clean line icon.
+ */
+export function ArrowUpRightIcon({ className }: IconProps) {
+  return (
+    <svg {...base} fill="none" className={className} aria-hidden>
+      <path
+        d="M7 17 17 7M8.5 7H17v8.5"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function MailIcon({ className }: IconProps) {
   return (
     <svg {...base} fill="none" className={className} aria-hidden>

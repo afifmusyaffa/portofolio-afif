@@ -7,6 +7,7 @@ import { profile } from "@/data/profile";
 import { defaultTransition } from "@/lib/animations";
 import { StatCounter } from "@/components/ui/StatCounter";
 import { DomainMarquee } from "@/components/ui/DomainMarquee";
+import { ArrowUpRightIcon } from "@/components/ui/SocialIcons";
 
 const stats = [
   { value: 4, suffix: "", label: { id: "Proyek dirilis", en: "Projects shipped" } },
@@ -69,10 +70,13 @@ export function Hero() {
                   {t({ id: "Lihat Proyek", en: "View Projects" })}
                 </a>
                 <a
-                  href="#contact"
+                  href={profile.resumeUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-black border border-black/10 shadow-sm px-6 py-3 text-sm font-semibold transition-transform hover:scale-[1.02] active:scale-95"
                 >
-                  {t({ id: "Hubungi Saya", en: "Get in Touch" })}
+                  {t({ id: "Lihat CV", en: "View CV" })}
+                  <ArrowUpRightIcon className="h-4 w-4" />
                 </a>
               </motion.div>
 
@@ -149,9 +153,7 @@ export function Hero() {
                     aria-label={t({ id: "Ke kontak", en: "Go to contact" })}
                     className="shrink-0 flex h-9 w-9 sm:h-11 sm:w-11 items-center justify-center rounded-xl bg-white text-black transition-transform hover:scale-110"
                   >
-                    <span aria-hidden className="text-sm sm:text-base">
-                      ↗
-                    </span>
+                    <ArrowUpRightIcon className="h-4 w-4 sm:h-5 sm:w-5" />
                   </a>
                 </div>
               </motion.div>

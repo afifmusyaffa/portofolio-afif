@@ -1,25 +1,44 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type MouseEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLocale, useT } from "@/lib/i18n";
 import type { Localized } from "@/lib/i18n";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
 import { easeOut } from "@/lib/animations";
 
+// The mobile dropdown's own closing animation (an AnimatePresence height
+// collapse, 0.3s) fights the browser's scroll-to-target while it's still
+// mounted and mid-transition — verified empirically that the scroll gets
+// silently discarded regardless of smooth/instant behavior. Waiting for the
+// close transition to fully settle before scrolling is what actually works.
+const MOBILE_MENU_CLOSE_MS = 320;
+
+function navigateAndClose(
+  e: MouseEvent<HTMLAnchorElement>,
+  id: string,
+  setOpen: (fn: (v: boolean) => boolean) => void
+) {
+  e.preventDefault();
+  setOpen(() => false);
+  setTimeout(() => {
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
+  }, MOBILE_MENU_CLOSE_MS);
+}
+
 const navItems: { href: string; id: string; label: Localized }[] = [
   { href: "#about", id: "about", label: { id: "Tentang", en: "About" } },
-  { href: "#projects", id: "projects", label: { id: "Proyek", en: "Work" } },
+  { href: "#projects", id: "projects", label: { id: "Karya", en: "Work" } },
   {
     href: "#experience",
     id: "experience",
     label: { id: "Pengalaman", en: "Experience" },
   },
-  { href: "#skills", id: "skills", label: { id: "Skill", en: "Skills" } },
+  { href: "#skills", id: "skills", label: { id: "Keahlian", en: "Skills" } },
   {
     href: "#certificates",
     id: "certificates",
-    label: { id: "Sertifikat", en: "Credentials" },
+    label: { id: "Sertifikasi", en: "Credentials" },
   },
 ];
 
@@ -95,7 +114,7 @@ function BarContent({
           href="#contact"
           className="hidden sm:inline-flex h-9 items-center rounded-xl bg-foreground text-background px-4 text-xs font-bold transition-transform hover:scale-[1.03] active:scale-95"
         >
-          {t({ id: "Hubungi", en: "Get in touch" })}
+          {t({ id: "Hubungi Saya", en: "Get in Touch" })}
         </a>
         <button
           onClick={() => setOpen((v) => !v)}
@@ -148,7 +167,7 @@ function MobileDropdown({
               <li key={item.href}>
                 <a
                   href={item.href}
-                  onClick={() => setOpen(() => false)}
+                  onClick={(e) => navigateAndClose(e, item.id, setOpen)}
                   className="block rounded-xl px-4 py-3 text-sm font-medium hover:bg-surface-2 transition-colors"
                 >
                   {t(item.label)}
@@ -158,10 +177,10 @@ function MobileDropdown({
             <li>
               <a
                 href="#contact"
-                onClick={() => setOpen(() => false)}
+                onClick={(e) => navigateAndClose(e, "contact", setOpen)}
                 className="mt-2 block rounded-xl bg-foreground text-background px-4 py-3 text-center text-sm font-bold"
               >
-                {t({ id: "Hubungi Saya", en: "Get in touch" })}
+                {t({ id: "Hubungi Saya", en: "Get in Touch" })}
               </a>
             </li>
           </ul>

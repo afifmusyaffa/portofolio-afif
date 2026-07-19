@@ -23,6 +23,21 @@ export const riseIn: Variants = {
   show: { opacity: 1, y: 0, scale: 1 },
 };
 
+/**
+ * Quieter counterparts used once a staggered group has already been seen —
+ * a smaller nudge from a state that's still mostly visible, instead of the
+ * full entrance replaying every time the group re-enters the viewport.
+ */
+export const fadeUpSubtle: Variants = {
+  hidden: { opacity: 0.6, y: 8 },
+  show: { opacity: 1, y: 0 },
+};
+
+export const riseInSubtle: Variants = {
+  hidden: { opacity: 0.6, y: 10, scale: 0.99 },
+  show: { opacity: 1, y: 0, scale: 1 },
+};
+
 /** Slides in from the side; pair with a per-item custom direction. */
 export const slideIn = (from: "left" | "right" = "left"): Variants => ({
   hidden: { opacity: 0, x: from === "left" ? -28 : 28 },

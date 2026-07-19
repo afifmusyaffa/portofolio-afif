@@ -1,11 +1,10 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useScroll, useTransform, useSpring } from "framer-motion";
+import { useRef, useState } from "react";
+import { motion, useScroll, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
 import { useT } from "@/lib/i18n";
 import { experience, type ExperienceItem } from "@/data/experience";
-import { TextReveal } from "@/components/ui/TextReveal";
-import { defaultTransition, viewportOnce } from "@/lib/animations";
+import { SectionHeading } from "@/components/ui/SectionHeading";
 
 function ExperienceRow({ item }: { item: ExperienceItem }) {
   const t = useT();
@@ -21,8 +20,15 @@ function ExperienceRow({ item }: { item: ExperienceItem }) {
     target: ref,
     offset: ["start 0.9", "start 0.45"],
   });
-  const opacity = useTransform(scrollYProgress, [0, 1], [0.35, 1]);
-  const scale = useTransform(scrollYProgress, [0, 1], [0.95, 1]);
+  const liveOpacity = useTransform(scrollYProgress, [0, 1], [0.35, 1]);
+  const liveScale = useTransform(scrollYProgress, [0, 1], [0.95, 1]);
+
+  // A ratchet: once the row has settled in, it's revealed for good, even
+  // if the user scrolls back up past it — only rows not yet reached dim.
+  const [revealed, setRevealed] = useState(false);
+  useMotionValueEvent(scrollYProgress, "change", (latest) => {
+    if (latest >= 0.98) setRevealed(true);
+  });
 
   return (
     <li ref={ref} className="relative pl-8 sm:pl-10">
@@ -31,7 +37,10 @@ function ExperienceRow({ item }: { item: ExperienceItem }) {
         aria-hidden
       />
 
-      <motion.div style={{ opacity, scale }} className="origin-left">
+      <motion.div
+        style={revealed ? { opacity: 1, scale: 1 } : { opacity: liveOpacity, scale: liveScale }}
+        className="origin-left"
+      >
         <div className="flex items-start justify-between gap-6">
           <div className="min-w-0">
             <p className="text-[11px] uppercase tracking-[0.16em] text-muted font-medium">
@@ -93,43 +102,14 @@ export function Experience() {
         <div className="grid lg:grid-cols-12 gap-10 lg:gap-16">
           <div className="lg:col-span-4">
             <div className="lg:sticky lg:top-28">
-              <motion.div
-                initial={{ opacity: 0, y: 12 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportOnce}
-                transition={defaultTransition()}
-                className="flex items-center gap-3"
-              >
-                <span className="font-mono text-[11px] tabular-nums text-muted">
-                  03
-                </span>
-                <span className="h-px w-8 bg-border" aria-hidden />
-                <span className="text-[11px] uppercase tracking-[0.18em] text-muted font-medium">
-                  {t({ id: "Pengalaman", en: "Experience" })}
-                </span>
-              </motion.div>
-
-              <h2 className="mt-5 font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-[1.08] text-balance">
-                <TextReveal
-                  text={t({
-                    id: "Dipercaya memimpin, hasilnya bisa diukur.",
-                    en: "Trusted to lead, measured by results.",
-                  })}
-                />
-              </h2>
-
-              <motion.p
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportOnce}
-                transition={defaultTransition(0.2)}
-                className="mt-4 text-base text-muted leading-relaxed max-w-sm"
-              >
-                {t({
-                  id: "Tiga peran dengan pola yang sama: diberi tanggung jawab, dituntaskan, dan meninggalkan hasil yang bisa dihitung.",
-                  en: "Three roles, one pattern: take the responsibility, see it through, leave something countable behind.",
+              <SectionHeading
+                index="03"
+                title={t({ id: "Pengalaman", en: "Experience" })}
+                lead={t({
+                  id: "Tiga peran, masing-masing dengan hasil yang bisa saya tunjukkan.",
+                  en: "Three roles, each measured by a result I can point to.",
                 })}
-              </motion.p>
+              />
             </div>
           </div>
 

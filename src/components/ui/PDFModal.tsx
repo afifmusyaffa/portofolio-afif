@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
 import { useT } from "@/lib/i18n";
+import { ArrowUpRightIcon } from "@/components/ui/SocialIcons";
 
 export function PDFModal({
   title,
@@ -95,7 +96,7 @@ export function PDFModal({
               className="inline-flex items-center gap-1.5 rounded-xl bg-foreground text-background px-4 py-2.5 text-sm font-semibold"
             >
               {t({ id: "Buka sertifikat", en: "Open certificate" })}
-              <span aria-hidden>↗</span>
+              <ArrowUpRightIcon className="h-4 w-4" />
             </a>
           </div>
           <iframe

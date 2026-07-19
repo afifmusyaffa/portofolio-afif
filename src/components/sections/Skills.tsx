@@ -1,16 +1,18 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 import { useT } from "@/lib/i18n";
 import { skillGroups, interpersonalSkills, type SkillGroup } from "@/data/skills";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { Reveal } from "@/components/ui/Reveal";
 import { VisionIcon, NetworkIcon, CodeIcon, DataIcon } from "@/components/ui/DomainIcons";
 import {
   viewportOnce,
-  defaultTransition,
   staggerContainer,
   fadeUp,
+  fadeUpSubtle,
 } from "@/lib/animations";
 
 const icons: Record<SkillGroup["icon"], typeof VisionIcon> = {
@@ -23,20 +25,24 @@ const icons: Record<SkillGroup["icon"], typeof VisionIcon> = {
 export function Skills() {
   const t = useT();
   const reduceMotion = useReducedMotion();
+  // See About.tsx: gate on `mounted` so the first client render (used for
+  // hydration) matches SSR instead of branching on a client-only value.
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setMounted(true);
+  }, []);
+  const [chipsSeen, setChipsSeen] = useState<Record<number, boolean>>({});
 
   return (
     <section id="skills" className="relative py-20 sm:py-28 lg:py-32">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           index="04"
-          eyebrow={t({ id: "Kemampuan", en: "Capabilities" })}
-          title={t({
-            id: "Empat bidang, satu alur kerja yang nyambung.",
-            en: "Four disciplines, one connected workflow.",
-          })}
+          title={t({ id: "Keahlian", en: "Skills" })}
           lead={t({
-            id: "Semua tools di bawah ini sudah saya pakai di proyek nyata, bukan sekadar hafalan dari silabus.",
-            en: "Every tool below is one I've used on a real project, not just read about in a syllabus.",
+            id: "Alat yang sudah saya pakai di proyek nyata, mulai dari AI, jaringan, web, sampai data.",
+            en: "Tools I've used on real projects, across AI, networking, web, and data.",
           })}
         />
 
@@ -45,12 +51,10 @@ export function Skills() {
           {skillGroups.map((group, i) => {
             const Icon = icons[group.icon];
             return (
-              <motion.div
+              <Reveal
                 key={group.label.en}
-                initial={{ opacity: 0, y: 36 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={viewportOnce}
-                transition={defaultTransition((i % 2) * 0.08)}
+                y={36}
+                delay={(i % 2) * 0.08}
                 className={group.span === "wide" ? "md:col-span-2" : "md:col-span-1"}
               >
                 <SpotlightCard className="group/card relative h-full overflow-hidden rounded-3xl border border-border bg-surface p-7 sm:p-8 flex flex-col">
@@ -61,7 +65,7 @@ export function Skills() {
                     aria-hidden
                     className="pointer-events-none absolute -bottom-6 -right-6 h-36 w-36 sm:h-44 sm:w-44 text-foreground opacity-[0.05]"
                     animate={
-                      reduceMotion
+                      mounted && reduceMotion
                         ? undefined
                         : { rotate: [6, 16, 6], y: [0, -12, 0] }
                     }
@@ -89,13 +93,16 @@ export function Skills() {
                     whileInView="show"
                     viewport={viewportOnce}
                     variants={staggerContainer(0.04, 0.15)}
+                    onViewportEnter={() =>
+                      setChipsSeen((prev) => ({ ...prev, [i]: true }))
+                    }
                     className="relative mt-6 flex flex-wrap gap-2 pt-6 border-t border-border"
                   >
                     {group.items.map((item) => (
                       <motion.span
                         key={item.name}
-                        variants={fadeUp}
-                        transition={{ duration: 0.4 }}
+                        variants={chipsSeen[i] ? fadeUpSubtle : fadeUp}
+                        transition={{ duration: chipsSeen[i] ? 0.3 : 0.4 }}
                         whileHover={{ y: -3 }}
                         className={`rounded-xl px-3 py-1.5 text-sm transition-colors cursor-default ${
                           item.featured
@@ -108,17 +115,15 @@ export function Skills() {
                     ))}
                   </motion.div>
                 </SpotlightCard>
-              </motion.div>
+              </Reveal>
             );
           })}
         </div>
 
         {/* Soft skills ride as a single quiet strip, not another card grid. */}
-        <motion.div
-          initial={{ opacity: 0, y: 24 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={viewportOnce}
-          transition={defaultTransition(0.1)}
+        <Reveal
+          y={24}
+          delay={0.1}
           className="mt-4 sm:mt-5 rounded-3xl bg-foreground text-background p-7 sm:p-8"
         >
           <div className="flex flex-col sm:flex-row sm:items-center gap-5 sm:gap-8">
@@ -133,7 +138,7 @@ export function Skills() {
               ))}
             </div>
           </div>
-        </motion.div>
+        </Reveal>
       </div>
     </section>
   );

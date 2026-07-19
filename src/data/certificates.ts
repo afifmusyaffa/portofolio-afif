@@ -30,8 +30,8 @@ export const certificates: Certificate[] = [
       en: "Official MikroTik Certification",
     },
     blurb: {
-      id: "Diuji langsung oleh vendornya — bukti nyata kemampuan konfigurasi jaringan.",
-      en: "Tested directly by the vendor — real proof of networking configuration skill.",
+      id: "Diuji langsung oleh vendornya, bukti nyata kemampuan konfigurasi jaringan.",
+      en: "Tested directly by the vendor, confirming real networking configuration skill.",
     },
     logo: "/certificates/logos/mikrotik.png",
     credential: {

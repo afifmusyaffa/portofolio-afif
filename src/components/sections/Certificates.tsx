@@ -6,20 +6,21 @@ import { useT } from "@/lib/i18n";
 import { certificates, type Certificate } from "@/data/certificates";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { PDFModal } from "@/components/ui/PDFModal";
-import { viewportOnce, defaultTransition } from "@/lib/animations";
+import { Reveal } from "@/components/ui/Reveal";
+import { ArrowUpRightIcon } from "@/components/ui/SocialIcons";
+import { viewportOnce } from "@/lib/animations";
 
 // Alternating tilt per seal — just enough to read as hand-stamped, not messy.
 const tilts = [-4, 3, -3];
 
 function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onOpen: () => void }) {
   const t = useT();
+  const [sealSeen, setSealSeen] = useState(false);
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 28 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={viewportOnce}
-      transition={defaultTransition(index * 0.1)}
+    <Reveal
+      y={28}
+      delay={index * 0.1}
       whileHover={{ y: -4 }}
       className="relative flex rounded-2xl border border-border bg-background shadow-sm"
     >
@@ -30,16 +31,25 @@ function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onO
       {/* Seal — the stamp. Presses in on scroll and again on click. */}
       <button
         onClick={onOpen}
-        aria-label={`${cert.title} — ${cert.issuer} — ${t({ id: "Buka sertifikat", en: "Open certificate" })}`}
+        aria-label={`${cert.title}, ${cert.issuer}, ${t({ id: "Buka sertifikat", en: "Open certificate" })}`}
         className="group relative w-24 sm:w-32 shrink-0 flex items-center justify-center p-4 sm:p-6"
       >
         <motion.span
-          initial={{ opacity: 0, scale: 1.5, rotate: tilts[index] * 4 }}
+          initial={
+            sealSeen
+              ? { opacity: 0.65, scale: 0.94, rotate: tilts[index] }
+              : { opacity: 0, scale: 1.5, rotate: tilts[index] * 4 }
+          }
           whileInView={{ opacity: 1, scale: 1, rotate: tilts[index] }}
           viewport={viewportOnce}
+          onViewportEnter={() => setSealSeen(true)}
           whileTap={{ scale: 0.88 }}
           whileHover={{ rotate: 0, scale: 1.06 }}
-          transition={{ type: "spring", stiffness: 260, damping: 16, delay: index * 0.1 + 0.15 }}
+          transition={
+            sealSeen
+              ? { type: "spring", stiffness: 300, damping: 22 }
+              : { type: "spring", stiffness: 260, damping: 16, delay: index * 0.1 + 0.15 }
+          }
           className="relative flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-full border-2 border-dashed border-foreground/25 bg-white p-3 shadow-sm"
         >
           {/* Plain <img>, not next/image — one asset is an SVG, and these
@@ -47,7 +57,7 @@ function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onO
               responsive pipeline. */}
           <img
             src={cert.logo}
-            alt={`${cert.issuer} — ${cert.title}`}
+            alt={`${cert.issuer}, ${cert.title}`}
             className="h-full w-full object-contain"
           />
         </motion.span>
@@ -92,12 +102,12 @@ function Ticket({ cert, index, onOpen }: { cert: Certificate; index: number; onO
               className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3.5 py-2 text-xs sm:text-sm font-semibold hover:border-foreground transition-colors"
             >
               {t({ id: "Lihat Credential", en: "View Credential" })}
-              <span aria-hidden>↗</span>
+              <ArrowUpRightIcon className="h-3.5 w-3.5" />
             </a>
           )}
         </div>
       </div>
-    </motion.div>
+    </Reveal>
   );
 }
 
@@ -125,14 +135,10 @@ export function Certificates() {
       <div className="relative mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <SectionHeading
           index="05"
-          eyebrow={t({ id: "Sertifikasi", en: "Credentials" })}
-          title={t({
-            id: "Diuji lembaga resmi, bukan klaim sendiri.",
-            en: "Assessed by the issuers, not self-declared.",
-          })}
+          title={t({ id: "Sertifikasi", en: "Credentials" })}
           lead={t({
-            id: "Dokumen aslinya bisa dibuka di sini, atau diverifikasi langsung ke penerbitnya.",
-            en: "Open the original document here, or verify it directly with the issuer.",
+            id: "Masing-masing bisa diverifikasi langsung ke penerbitnya.",
+            en: "Each one verifiable directly with the issuer.",
           })}
         />
 

@@ -70,8 +70,8 @@ export const projects: Project[] = [
     domain: "NLP",
     year: "2025",
     outcome: {
-      id: "Akurasi F1 89,15% — dan siapa pun bisa mencobanya sekarang.",
-      en: "89.15% F1-score — and anyone can try it right now.",
+      id: "Akurasi F1 89,15%, siap dicoba siapa saja sekarang.",
+      en: "An 89.15% F1-score, ready for anyone to try right now.",
     },
     description: {
       id: "Memilah berita kriminal berbahasa Indonesia ke enam kategori memakai TF-IDF dengan Logistic Regression dan SVM. Sudah tayang di Hugging Face Spaces.",

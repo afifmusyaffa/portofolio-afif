@@ -1,20 +1,23 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { useT } from "@/lib/i18n";
 import { profile } from "@/data/profile";
 import { TextReveal } from "@/components/ui/TextReveal";
+import { Reveal } from "@/components/ui/Reveal";
 import {
   GithubIcon,
   LinkedinIcon,
   InstagramIcon,
   MailIcon,
+  ArrowUpRightIcon,
 } from "@/components/ui/SocialIcons";
 import {
   viewportOnce,
-  defaultTransition,
   staggerContainer,
   fadeUp,
+  fadeUpSubtle,
 } from "@/lib/animations";
 
 const links = [
@@ -26,6 +29,7 @@ const links = [
 
 export function Contact() {
   const t = useT();
+  const [iconsSeen, setIconsSeen] = useState(false);
 
   return (
     <section id="contact" className="relative pt-20 sm:pt-28 lg:pt-32">
@@ -34,11 +38,8 @@ export function Contact() {
             Fixed dark palette on purpose: unlike the rest of the site, this
             block does not flip with light/dark mode, so the premium backdrop
             below always reads as intended. */}
-        <motion.div
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={viewportOnce}
-          transition={defaultTransition()}
+        <Reveal
+          y={40}
           className="relative overflow-hidden rounded-[2rem] sm:rounded-[2.5rem] px-6 py-14 sm:px-12 sm:py-20 lg:py-24 text-center"
           style={{
             background:
@@ -90,11 +91,10 @@ export function Contact() {
             />
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={viewportOnce}
-            transition={defaultTransition(0.1)}
+          <Reveal
+            scale={0.9}
+            y={0}
+            delay={0.1}
             className="relative inline-flex items-center gap-2 rounded-xl border border-current/20 px-3.5 py-1.5"
           >
             <span className="relative flex h-1.5 w-1.5">
@@ -107,35 +107,32 @@ export function Contact() {
                 en: "Open to internships & collaboration",
               })}
             </span>
-          </motion.div>
+          </Reveal>
 
           <h2 className="mt-7 font-display text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.02] text-balance">
             <TextReveal
               text={t({
-                id: "Cari anak magang yang siap sejak hari pertama?",
-                en: "Looking for an intern who's ready on day one?",
+                id: "Hubungi Saya",
+                en: "Get in Touch",
               })}
             />
           </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 16 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportOnce}
-            transition={defaultTransition(0.3)}
+          <Reveal
+            as="p"
+            y={16}
+            delay={0.3}
             className="mt-6 mx-auto max-w-lg text-base sm:text-lg opacity-70 leading-relaxed"
           >
             {t({
               id: "Satu email saja cukup. Biasanya saya balas di hari yang sama.",
-              en: "One email is enough — I usually reply the same day.",
+              en: "One email is enough. I usually reply the same day.",
             })}
-          </motion.p>
+          </Reveal>
 
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={viewportOnce}
-            transition={defaultTransition(0.4)}
+          <Reveal
+            y={20}
+            delay={0.4}
             className="mt-9 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3"
           >
             <a
@@ -143,7 +140,7 @@ export function Contact() {
               className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-black px-7 py-4 text-sm font-semibold transition-transform hover:scale-[1.03] active:scale-95"
             >
               {t({ id: "Email saya", en: "Email me" })}
-              <span aria-hidden>↗</span>
+              <ArrowUpRightIcon className="h-4 w-4" />
             </a>
             <a
               href={profile.socials.linkedin}
@@ -153,18 +150,17 @@ export function Contact() {
             >
               {t({ id: "Terhubung di LinkedIn", en: "Connect on LinkedIn" })}
             </a>
-          </motion.div>
+          </Reveal>
 
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={viewportOnce}
-            transition={defaultTransition(0.55)}
+          <Reveal
+            as="p"
+            y={0}
+            delay={0.55}
             className="mt-8 font-mono text-xs sm:text-sm opacity-60 break-all"
           >
             {profile.email}
-          </motion.p>
-        </motion.div>
+          </Reveal>
+        </Reveal>
       </div>
 
       <footer className="mt-16 border-t border-border">
@@ -179,6 +175,7 @@ export function Contact() {
             whileInView="show"
             viewport={viewportOnce}
             variants={staggerContainer(0.06)}
+            onViewportEnter={() => setIconsSeen(true)}
             className="flex items-center gap-2"
           >
             {links.map(({ label, href, Icon }) => {
@@ -186,8 +183,8 @@ export function Contact() {
               return (
                 <motion.a
                   key={label}
-                  variants={fadeUp}
-                  transition={{ duration: 0.4 }}
+                  variants={iconsSeen ? fadeUpSubtle : fadeUp}
+                  transition={{ duration: iconsSeen ? 0.3 : 0.4 }}
                   href={href}
                   target={isMail ? undefined : "_blank"}
                   rel={isMail ? undefined : "noopener noreferrer"}
